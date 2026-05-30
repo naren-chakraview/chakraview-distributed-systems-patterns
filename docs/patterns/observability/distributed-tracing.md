@@ -141,8 +141,63 @@ async def agent_workflow(task):
     return result
 ```
 
+## Code References
+
+### Reference Implementation
+
+**Vector Clock (Causality Tracking):**
+- File: `reference-implementations/shared/python/vector_clock.py`
+- Class: `VectorClock` — tracks causal relationships
+- Methods:
+  - `increment(agent_id)` — increment clock for this agent
+  - `merge(other)` — merge incoming clock (implements happened-before relation)
+  - `to_dict()` — serialize for propagation in messages
+
+**Agent Base with Trace Support:**
+- File: `reference-implementations/shared/python/agent_base.py`
+- Method: `set_trace_id()` (lines 60-69) — sets trace ID for correlation
+- Method: `set_vector_clock()` (lines 71-80) — merges incoming vector clock
+
+**Structured Logging:**
+- File: `reference-implementations/shared/python/logging.py`
+- Class: `StructuredLogger` — attaches trace ID to all logs
+- Methods:
+  - `set_trace_id()` — sets trace ID for request context
+  - `set_vector_clock()` — embeds vector clock in logs
+
+### Tests
+
+**Integration Tests:**
+- File: `tests/integration/test_full_pipeline.py`
+- Test: `test_trace_id_correlation()` (lines 240-255)
+  - Documents trace ID propagation interface
+  - Shows how agents would receive and use trace IDs
+
+- Test: `test_vector_clock_propagation()` (lines 68-110)
+  - Verifies vector clocks increment correctly
+  - Tests clock merging across agents
+  - Validates causality tracking
+
+**Fixtures:**
+- File: `tests/conftest.py`
+- VectorClock class: Lines 35-52 (mock implementation)
+- Result dataclasses: Lines 50+ (include vector_clock field)
+
+### Infrastructure
+
+**Jaeger Backend:**
+- File: `examples/local-dev/docker-compose.yml`
+- Service: jaeger (lines for jaeger-all-in-one)
+- Port: 6831 (UDP for spans), 16686 (UI)
+
+**Demo:**
+- File: `examples/pattern-demos/demo_tracing.py`
+  - Shows how to instrument agents with tracing
+  - Demonstrates trace visualization in Jaeger
+
 ## References
 
 - [Understanding Model Decisions](understanding-decisions.md)
 - [Causality & Ordering](../../foundations/causality-and-ordering.md)
+- [Multi-Agent Coordination](../integration/multi-agent-coordination.md)
 - OpenTelemetry: https://opentelemetry.io/

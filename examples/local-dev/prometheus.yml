@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'agent-system'
+
+# Alerting rules
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Load rules
+rule_files: []
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Agent metrics (if using Prometheus client library)
+  - job_name: 'agent-metrics'
+    static_configs:
+      - targets: ['localhost:8000']
+    scrape_interval: 5s
+    scrape_timeout: 5s

@@ -75,7 +75,51 @@ if budget.remaining() < 100:
 - "Which users are heaviest token consumers?"
 - "Invocations that exceeded budget"
 
+## Code References
+
+### Reference Implementation
+
+**Agent Base Class:**
+- File: `reference-implementations/shared/python/agent_base.py`
+- Lines: 19-40 (AgentConfig with token_budget)
+- Method: `execute()` (lines 82-131) - budget checking and enforcement
+
+**Edge Agents:**
+- Intent Detection: `reference-implementations/edge_agents/intent_agent.py`
+  - Token estimation: Line 140 (`tokens_estimate = max(1, len(message) // 4)`)
+  - Budget checking: Lines 144-149
+  - Token tracking: Line 184 (`self.token_usage`)
+- Fraud Detection: `reference-implementations/edge_agents/fraud_agent.py`
+  - Similar pattern to intent detection
+
+**Cloud Agents:**
+- Trends Analysis: `reference-implementations/cloud_agents/trends_agent.py`
+  - Higher token budgets (10000 vs 5000 for edge)
+
+### Tests
+
+**Integration Tests:**
+- File: `tests/integration/test_full_pipeline.py`
+- Test: `test_token_budgeting_across_agents()` (lines 150-180)
+  - Verifies token consumption across multiple agent invocations
+  - Validates budget enforcement
+  - Checks budget remaining calculation
+
+**Test Fixtures:**
+- File: `tests/conftest.py`
+  - AgentConfig class: Lines 30-40
+  - MockIntentAgent: Lines 64-95 (token_usage tracking)
+  - Fixture definitions: Lines 200+ (agent configs with budgets)
+
+### Demo Scripts
+
+- File: `examples/pattern-demos/demo_token_budgeting.py`
+  - Live demonstration of budget exhaustion
+  - Shows token estimation accuracy
+  - Demonstrates degradation mode
+
 ## References
 
 - [Context Window Management](context-window-management.md)
 - [Resource Allocation Strategy](../resource-allocation/reservation-vs-burst.md)
+- [Behavior Degradation](behavior-degradation.md)
