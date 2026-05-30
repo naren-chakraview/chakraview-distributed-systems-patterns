@@ -1,29 +1,43 @@
-# chakraview-distributed-systems-patterns
+# AI Analytics Engine — Reference Implementation
 
-Distributed systems patterns and practices for LLM-backed agent systems deployed in edge+cloud hybrid environments.
-
-This project documents patterns for **observability**, **predictability**, **resource allocation**, and **failure recovery** in agentic systems — challenges that emerge when agents are distributed across networks.
+A modular, production-grade implementation of the AI Analytics Engine case study, demonstrating all 35 distributed systems patterns from the [Distributed Systems for Agentic Workloads](../../) documentation.
 
 ## Quick Start
 
-- **New to agent systems?** Start with [Foundations](docs/foundations/)
-- **Want to observe agents?** See [Observability Patterns](docs/patterns/observability/)
-- **Debugging a failure?** Check [Failure Recovery Patterns](docs/patterns/failure-recovery/)
-- **Deploying at scale?** Read [Deployment Patterns](docs/patterns/edge-cloud-deployment/)
-- **See it all together?** Read the [Case Study](docs/case-study/)
+```bash
+docker-compose -f examples/local-dev/docker-compose.yml up
+```
 
-## Contents
+## Structure
 
-- **[Foundations](docs/foundations/)** — Core concepts (causality, consistency, failure modes, time, trust)
-- **[Patterns](docs/patterns/)** — Observability, Predictability, Resource Allocation, Failure Recovery, Edge+Cloud Deployment, Integration
-- **[Case Study](docs/case-study/)** — Large-scale analytics engine demonstrating patterns in practice
-- **[Examples](examples/)** — Code snippets and runnable demos
-- **[ADRs](docs/adrs/)** — Architecture Decision Records
+- **shared/** — Protocol Buffer definitions and base classes
+- **edge-agents/** — Intent detection and fraud detection agents
+- **cloud-agents/** — Segmentation and trends agents
+- **swarm/** — Backtest processor swarm
+- **queue/** — Async coordination service (Go)
+- **observability/** — Distributed tracing service (Go)
+- **orchestration/** — Workflow orchestrator (Go + Python)
+- **examples/** — Deployment configs and demos
 
-## About This Project
+## Pattern Demonstrations
 
-This is one of six portfolio projects exploring architecture at scale. See [Chakraview Portfolio](https://naren-chakraview.github.io/) for related work on enterprise modernization, real-time data platforms, and data engineering patterns.
+Each module includes code comments that reference specific patterns:
 
-## Contributing
+```python
+# Pattern: Token Budgeting (see docs/patterns/predictability/token-budgeting.md)
+```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add patterns, examples, or feedback.
+See [PATTERN_LINKS.md](PATTERN_LINKS.md) for a complete mapping of code examples to documentation.
+
+## Testing
+
+```bash
+make test
+```
+
+## Building
+
+```bash
+make proto  # Generate gRPC code
+make build  # Compile Go binaries
+```

@@ -2,50 +2,29 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
+dist/
+build/
 venv/
-ENV/
-env/
+.env
+*.log
+
+# Go
+bin/
+dist/
+*.o
+*.a
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# OS
-.DS_Store
-Thumbs.db
+# Docker
+.docker/
 
-# Project-specific
-.env
-.env.local
-*.log
-
-# Build artifacts
-node_modules/
-dist/
-build/
-
-# Temporary files
-*.tmp
-*.bak
+# Credentials
+.credentials/
+secrets.json
+*.pem
