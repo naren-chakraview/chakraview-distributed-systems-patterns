@@ -1,0 +1,74 @@
+agents:
+  # Orchestrator agent: highest privilege, can delegate
+  - id: "agent-orchestrator"
+    name: "Orchestrator"
+    tier: "elevated"
+    signing_key: "test-secret-12345"
+    allowed_actions:
+      - "orchestrate"
+      - "delegate"
+      - "read_config"
+      - "write_state"
+    max_delegation_depth: 3
+    can_delegate: true
+    requires_audit_log: true
+    can_access_sensitive_data: true
+    max_concurrent_operations: 20
+
+  # Intent agent: standard privilege, limited delegation
+  - id: "agent-intent"
+    name: "Intent Parser"
+    tier: "standard"
+    signing_key: "test-secret-12345"
+    allowed_actions:
+      - "parse_intent"
+      - "query_registry"
+      - "delegate"
+    max_delegation_depth: 2
+    can_delegate: true
+    requires_audit_log: true
+    can_access_sensitive_data: false
+    max_concurrent_operations: 10
+
+  # Fraud detection agent: standard tier, sensitive data access
+  - id: "agent-fraud"
+    name: "Fraud Detector"
+    tier: "standard"
+    signing_key: "test-secret-12345"
+    allowed_actions:
+      - "analyze_transactions"
+      - "flag_suspicious"
+      - "access_payment_data"
+    max_delegation_depth: 1
+    can_delegate: false
+    requires_audit_log: true
+    can_access_sensitive_data: true
+    max_concurrent_operations: 5
+
+  # Segmentation agent: least privilege
+  - id: "agent-segment"
+    name: "Customer Segmentation"
+    tier: "least_privilege"
+    signing_key: "test-secret-12345"
+    allowed_actions:
+      - "segment_customers"
+      - "read_profiles"
+    max_delegation_depth: 1
+    can_delegate: false
+    requires_audit_log: true
+    can_access_sensitive_data: false
+    max_concurrent_operations: 5
+
+  # Trends agent: least privilege, read-only
+  - id: "agent-trends"
+    name: "Trend Analyzer"
+    tier: "least_privilege"
+    signing_key: "test-secret-12345"
+    allowed_actions:
+      - "analyze_trends"
+      - "read_analytics"
+    max_delegation_depth: 1
+    can_delegate: false
+    requires_audit_log: false
+    can_access_sensitive_data: false
+    max_concurrent_operations: 3
