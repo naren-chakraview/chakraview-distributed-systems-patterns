@@ -28,3 +28,4 @@ What follows from this decision?
 ## Decisions
 
 - [ADR-0001: Agent-Specific Consistency Model](ADR-0001-agent-specific-consistency-model.md)
+- [ADR-0002: Zero Trust Agent Identities](ADR-0002-zero-trust-agent-identities.md)
