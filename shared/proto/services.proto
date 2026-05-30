@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package analytics;
+
+option go_package = "github.com/chakraview/ai-analytics-engine/shared/proto";
+
+import "google/protobuf/timestamp.proto";
+import "shared/proto/messages.proto";
+
+// QueueService manages async event coordination
+// Pattern: Asynchronous Coordination (see docs/patterns/edge-cloud-deployment/async-coordination.md)
+service QueueService {
+  rpc EnqueueEvent(Event) returns (EnqueueResponse);
+  rpc DequeueBatch(DequeueBatchRequest) returns (EventBatch);
+  rpc AckBatch(AckBatchRequest) returns (AckBatchResponse);
+  rpc GetQueueStatus(GetQueueStatusRequest) returns (QueueStatus);
+}
+
+message EnqueueResponse {
+  bool success = 1;
+  string event_id = 2;
+  int64 queue_depth = 3;
+}
+
+message DequeueBatchRequest {
+  string consumer_id = 1;
+  int32 batch_size = 2;
+  int64 timeout_ms = 3;
+}
+
+message EventBatch {
+  repeated Event events = 1;
+  string batch_id = 2;
+}
+
+message AckBatchRequest {
+  string batch_id = 1;
+  string consumer_id = 2;
+}
+
+message AckBatchResponse {
+  bool success = 1;
+}
+
+message GetQueueStatusRequest {
+  string partition_id = 1;
+}
+
+message QueueStatus {
+  int64 depth = 1;
+  int64 oldest_event_age_ms = 2;
+  string status = 3;
+}
+
+// ObservabilityService manages tracing and metrics
+// Pattern: Distributed Tracing (see docs/patterns/observability/distributed-tracing.md)
+service ObservabilityService {
+  rpc RecordSpan(Span) returns (RecordSpanResponse);
+  rpc GetTrace(GetTraceRequest) returns (Trace);
+  rpc GetMetrics(GetMetricsRequest) returns (MetricsResponse);
+}
+
+message Span {
+  string trace_id = 1;
+  string span_id = 2;
+  string parent_span_id = 3;
+  string operation_name = 4;
+  google.protobuf.Timestamp start_time = 5;
+  int64 duration_ms = 6;
+  map<string, string> tags = 7;
+  repeated SpanLog logs = 8;
+}
+
+message SpanLog {
+  google.protobuf.Timestamp timestamp = 1;
+  map<string, string> fields = 2;
+}
+
+message GetTraceRequest {
+  string trace_id = 1;
+}
+
+message Trace {
+  string trace_id = 1;
+  repeated Span spans = 2;
+}
+
+message GetMetricsRequest {
+  string agent_id = 1;
+}
+
+message MetricsResponse {
+  repeated HealthMetric metrics = 1;
+}
+
+message RecordSpanResponse {
+  bool success = 1;
+}

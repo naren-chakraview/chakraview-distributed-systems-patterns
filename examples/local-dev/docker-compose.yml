@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # PostgreSQL: Persistent state storage for agents, transactions, and analytics
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: agents_db
+      POSTGRES_USER: agents_user
+      POSTGRES_PASSWORD: agents_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agents_user -d agents_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agents_network
+
+  # Redis: Caching layer for agent decisions, session state, and quick lookups
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agents_network
+
+  # Jaeger: Distributed tracing backend for observability
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      # Jaeger UI
+      - "16686:16686"
+      # OTLP gRPC receiver
+      - "4317:4317"
+      # OTLP HTTP receiver
+      - "4318:4318"
+      # Jaeger agent (UDP)
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      # Jaeger collector (Thrift over HTTP)
+      - "14268:14268"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:14269/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agents_network
+
+  # Message Queue: Async coordination between agents and services
+  queue:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: agents_user
+      RABBITMQ_DEFAULT_PASS: agents_password
+    ports:
+      # AMQP protocol
+      - "5672:5672"
+      # Management UI
+      - "15672:15672"
+    volumes:
+      - queue_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agents_network
+
+  # Prometheus: Metrics collection and time-series database
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agents_network
+
+  # Grafana: Metrics visualization and dashboards
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: agents_password
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agents_network
+
+volumes:
+  postgres_data:
+  redis_data:
+  queue_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  agents_network:
+    driver: bridge

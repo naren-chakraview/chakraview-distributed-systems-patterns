@@ -68,8 +68,49 @@ user_query → (2s latency budget, 1.8s elapsed)
 - "When did this agent degrade?"
 - "How much did quality drop compared to normal?"
 
+## Code References
+
+### Reference Implementation
+
+**Degradation Implementation:**
+- File: `reference-implementations/edge_agents/intent_agent.py`
+- Method: `_degrade_to_keyword_matching()` (lines 201-252)
+  - Triggers when token budget exceeded
+  - Falls back to keyword matching
+  - Reduces confidence scores (max 0.6 in degraded mode)
+  - Uses minimal tokens (1/20 of normal estimate)
+
+**Budget-Triggered Degradation:**
+- Lines 144-149: Budget check triggers degradation path
+- Line 223: `degraded_tokens = max(1, len(message) // 20)` — minimal token allocation in degraded mode
+
+**Confidence Reduction:**
+- Line 229: `confidence = min(0.6, best_intent[1] * 0.7)` — explicitly cap degraded confidence
+
+### Tests
+
+**Integration Tests:**
+- File: `tests/integration/test_full_pipeline.py`
+- Test: `test_degradation_mode_behavior()` (lines 250-275)
+  - Exhausts token budget
+  - Verifies agent still produces results
+  - Validates graceful fallback behavior
+
+**Fixtures:**
+- File: `tests/conftest.py`
+- MockIntentAgent: Simulates degradation path
+- Test setup allows budget constraint testing
+
+### Demo Scripts
+
+- File: `examples/pattern-demos/demo_token_budgeting.py`
+  - Shows degradation in action
+  - Demonstrates confidence score changes
+  - Illustrates token savings from degradation
+
 ## References
 
 - [Context Window Management](context-window-management.md)
 - [Token Budgeting](token-budgeting.md)
 - [SLOs for Agentic Workloads](agentic-slos.md)
+- [Understanding Model Decisions](../observability/understanding-decisions.md)
