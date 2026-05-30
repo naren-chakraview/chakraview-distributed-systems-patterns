@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package agentic.messages;
+
+// Health metric for monitoring agent status
+message HealthMetric {
+  string agent_id = 1;
+  int64 timestamp = 2;
+  float cpu_usage = 3;
+  float memory_usage = 4;
+  int64 tokens_used = 5;
+  int64 tokens_remaining = 6;
+}
+
+// Event represents a discrete action or state change
+message Event {
+  string event_id = 1;
+  string event_type = 2;
+  string agent_id = 3;
+  int64 timestamp = 4;
+  string source = 5;
+  string destination = 6;
+  string payload = 7;
+  int32 sequence_number = 8;
+
+  // Pattern: Zero Trust for Agents (see docs/foundations/zero-trust-for-agents.md)
+  string agent_identity_token = 9;
+  string trust_tier = 10;
+}
+
+// Pattern: Zero Trust for Agents (see docs/foundations/zero-trust-for-agents.md)
+message AgentIdentity {
+  string agent_id = 1;
+  string agent_type = 2;
+  string trust_tier = 3;
+  repeated string capabilities = 4;
+  string issuer = 5;
+  int64 issued_at = 6;
+  int64 expires_at = 7;
+  string parent_agent_id = 8;
+}
