@@ -361,12 +361,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add patterns, examples, or fee
 ## About This Project
 
 This is one of six portfolio projects exploring architecture at scale:
-- [Fintech Data Mesh](https://github.com/chakraview/fintech-data-mesh)
-- [Zero-Trust Blueprint](https://github.com/chakraview/zero-trust-blueprint)
-- [Real-Time Data Platform](https://github.com/chakraview/realtime-data-platform)
-- [Enterprise Modernization](https://github.com/chakraview/enterprise-modernization)
+- [Fintech Data Mesh](https://github.com/naren-chakraview/chakraview-fintech-data-mesh)
+- [Zero-Trust Blueprint](https://github.com/naren-chakraview/chakraview-zero-trust-blueprint)
+- [Real-Time Data Platform](https://github.com/naren-chakraview/chakraview-realtime-data-platform)
+- [Enterprise Modernization](https://github.com/naren-chakraview/chakraview-enterprise-modernization)
 - **Distributed Systems Patterns** (this project)
-- [Developer Experience Paved Path](https://github.com/chakraview/devex-paved-path)
+- [Developer Experience Paved Path](https://github.com/naren-chakraview/chakraview-devex-paved-path)
 
 See [Chakraview Portfolio](https://naren-chakraview.github.io/) for overview.
 
