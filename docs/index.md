@@ -10,6 +10,7 @@ Core distributed systems concepts adapted for agent systems.
 - [Agent Failure Modes](foundations/agent-failure-modes.md) — Non-determinism, context degradation, token depletion
 - [Time, Clocks & Synchronization](foundations/time-and-clocks.md) — Clock skew, event-time, timeout detection
 - [Trust & Byzantine Agents](foundations/trust-and-byzantine.md) — Verifying agent claims, consensus with untrusted agents
+- [Zero Trust for Agents](foundations/zero-trust-for-agents.md) — Agent identity, capability policy, delegation chains, OBO tokens
 
 ### [Patterns](patterns/)
 
